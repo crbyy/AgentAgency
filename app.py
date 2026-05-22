@@ -26,8 +26,14 @@ with app.app_context():
 @app.route('/')
 @app.route('/agents')
 def get_agents():
-    agents = Agent.query.all()  # Получаем все задачи из базы
-    return render_template('agents.html', agents=agents)
+    level = request.args.get('level', 'all')
+    agents = Agent.query
+
+    if level != 'all':
+        agents = agents.filter(Agent.access_level == level)
+
+    agents = agents.all()
+    return render_template('agents.html', agents=agents, current_level=level)
 
 
 # 📌 Добавление новой задачи
@@ -53,16 +59,10 @@ def add_agent():
 
 
 # 📌 Просмотр данных
-@app.route('/agent', methods=['GET', 'POST'])
-def get_agent():
-    if request.method == 'POST':
-        codename = request.form['codename']
-        if codename.strip():  # Проверяем, что строка не пустая
-            new_agent = Agent(codename=codename)
-            db.session.add(new_agent)
-            db.session.commit()
-        return redirect(url_for('get_agents'))
-    return render_template('add.html')
+@app.route('/agent/<int:id>')
+def get_agent(id):
+    agent = Agent.query.get_or_404(id)
+    return render_template('data.html', agent=agent)
 
 
 # 📌 Редактирование задачи
@@ -70,12 +70,27 @@ def get_agent():
 def edit_agent(id):
     agent = Agent.query.get_or_404(id)  # Получаем задачу по ID
     if request.method == 'POST':
-        new_agent = request.form['title']
+        new_agent = request.form['codename']
         if new_agent.strip():
             agent.codename = new_agent
             db.session.commit()
         return redirect(url_for('get_agents'))
     return render_template('edit.html', agent=agent)
+
+
+
+# 📌 Поиск агента по кодовому имени
+@app.route('/search', methods=['GET', 'POST'])
+def search_agent():
+    agents = []
+    query = ''
+    if request.method == 'POST':
+        query = request.form.get('search')
+        if query:
+            agents = Agent.query.filter(Agent.codename.contains(query)).all()
+    return render_template('search.html', agents=agents, query=query)
+
+
 
 # 📌 Удаление задачи
 @app.route('/delete/<int:id>')
@@ -83,6 +98,13 @@ def delete_agent(id):
     agent = Agent.query.get_or_404(id)  # Получаем задачу по ID
     db.session.delete(agent)  # Удаляем из базы
     db.session.commit()  # Подтверждаем изменения
+    return redirect(url_for('get_agents'))
+
+# 📌 Удаление ВСЕХ
+@app.route('/delete_all')
+def delete_all():
+    Agent.query.delete()
+    db.session.commit()
     return redirect(url_for('get_agents'))
 
 # Запуск сервера
