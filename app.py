@@ -39,13 +39,17 @@ def get_agents():
 # 📌 Добавление новой задачи
 @app.route('/add', methods=['GET', 'POST'])
 def add_agent():
+    error = None
     if request.method == 'POST':
         codename = request.form['codename']
         phone = request.form['phone']
         email =request.form['email']
         access_level = request.form['access_level']
 
-        if codename.strip():  # Проверяем, что строка не пустая
+        existing = Agent.query.filter_by(codename=codename).first()
+        if existing:
+            error = 'Агент с таким кодовым именем уже существует!'
+        elif codename.strip():
             new_agent = Agent(
                 codename=codename,
                 phone=phone,
@@ -54,8 +58,9 @@ def add_agent():
             )
             db.session.add(new_agent)
             db.session.commit()
-        return redirect(url_for('get_agents'))
-    return render_template('add.html')
+            return redirect(url_for('get_agents'))
+
+    return render_template('add.html', error=error)
 
 
 # 📌 Просмотр данных
