@@ -10,7 +10,7 @@
 <body class="bg-light">
 
     <div class="container mt-5">
-        <h1 class="text-center">Add a New Agent</h1>
+        <h1 class="text-center">Добавить Агента</h1>
 
         {% if error %}
             <div class="alert alert-danger">
@@ -21,29 +21,29 @@
         <div class="card shadow p-4">
             <form method="POST">
                 <div class="mb-3">
-                    <label for="codename" class="form-label">Agent Codename:</label>
+                    <label for="codename" class="form-label">Кодовое имя:</label>
                     <input type="text" id="codename" name="codename" class="form-control" required>
                     <br>
 
-                    <label for="phone" class="form-label">Agent Phone:</label>
+                    <label for="phone" class="form-label">Телефон:</label>
                     <input type="tel" id="phone" name="phone" class="form-control" required>
                     <br>
 
-                    <label for="email" class="form-label">Agent Email:</label>
+                    <label for="email" class="form-label">Email:</label>
                     <input type="email" id="email" name="email" class="form-control" required>
 
 
 
-                    <br><label class="form-label">Agent Access Level:</label><br>
+                    <br><label class="form-label">Уровень доступа:</label><br>
                     <input type="radio" id="secret" name="access_level" value="Секретно" required> <label for="secret">Секретно</label><br>
                     <input type="radio" id="top_secret" name="access_level" value="Совершенно секретно"> <label for="top_secret">Совершенно секретно</label><br>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Add Agent</button>
+                <button type="submit" class="btn btn-primary w-100">Добавить Агента</button>
             </form>
         </div>
 
         <div class="text-center mt-4">
-            <a href="{{ url_for('get_agents') }}" class="btn btn-secondary">Back to Agent List</a>
+            <a href="{{ url_for('get_agents') }}" class="btn btn-secondary">К списку Агентов</a>
         </div>
     </div>
 

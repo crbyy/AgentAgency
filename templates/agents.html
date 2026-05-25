@@ -32,7 +32,7 @@
                         <a href="{{ url_for('edit_agent', id=agent.id) }}" class="btn btn-sm btn-warning">Ред.</a>
                         <form method="POST" action="{{ url_for('delete_agent', id=agent.id) }}" style="display: inline;">
                             <button type="submit" class="btn btn-sm btn-danger"
-                                    onclick="return confirm('Are you sure?')">Удалить</button>
+                                    onclick="return confirm('Вы уверены?')">Удалить</button>
                         </form>
                     </div>
                 </li>

@@ -8,19 +8,20 @@
 <body class="bg-light">
 
 <div class="container mt-5">
-    <h1 class="text-center">Agent Data</h1>
+    <h1 class="text-center">Данные Агента</h1>
 
     <div class="card shadow p-4">
 
-        <p><strong>Codename:</strong> {{ agent.codename }}</p>
-        <p><strong>Phone:</strong> {{ agent.phone }}</p>
+        <p><strong>Кодовое имя:</strong> {{ agent.codename }}</p>
+        <p><strong>Телефон:</strong> {{ agent.phone }}</p>
         <p><strong>Email:</strong> {{ agent.email }}</p>
-        <p><strong>Access Level:</strong> {{ agent.access_level }}</p>
+        <p><strong>Уровень доступа:</strong> {{ agent.access_level }}</p>
 
         <div class="mt-3">
-            <a href="{{ url_for('edit_agent', id=agent.id) }}" class="btn btn-warning">Edit</a>
-            <a href="{{ url_for('delete_agent', id=agent.id) }}" class="btn btn-danger" onclick="return confirm('Delete agent?')">Delete</a>
-            <a href="{{ url_for('get_agents') }}" class="btn btn-secondary">Back to list</a>
+            <a href="{{ url_for('edit_agent', id=agent.id) }}" class="btn btn-warning">Ред.</a>
+            <a href="{{ url_for('delete_agent', id=agent.id) }}" class="btn btn-danger"
+               onclick="return confirm('Удалить Агента?')">Удалить</a>
+            <a href="{{ url_for('get_agents') }}" class="btn btn-secondary">К списку Агентов</a>
         </div>
     </div>
 </div>
