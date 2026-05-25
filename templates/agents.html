@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,12 +10,13 @@
 <body class="bg-light">
 
     <div class="container mt-5">
-        <h1 class="text-center">Agent List</h1>
-        <a href="{{ url_for('search_agent') }}" class="btn btn-outline-primary">Search</a>
+        <h1 class="text-center">Список Агентов</h1>
+        <a href="{{ url_for('search_agent') }}" class="btn btn-outline-primary">Поиск</a>
 
         <br><br>
         <div class="mb-4">
-            <a href="{{ url_for('get_agents', level='all') }}" class="btn btn-sm {% if current_level == 'all' %}btn-primary{% else %}btn-outline-secondary{% endif %}">All</a>
+            <a href="{{ url_for('get_agents', level='all') }}"
+               class="btn btn-sm {% if current_level == 'all' %}btn-primary{% else %}btn-outline-secondary{% endif %}">Все</a>
             <a href="{{ url_for('get_agents', level='Секретно') }}" class="btn btn-sm {% if current_level == 'Секретно' %}btn-primary{% else %}btn-outline-secondary{% endif %}">Секретно</a>
             <a href="{{ url_for('get_agents', level='Совершенно секретно') }}" class="btn btn-sm {% if current_level == 'Совершенно секретно' %}btn-primary{% else %}btn-outline-secondary{% endif %}">Совершенно секретно</a>
         </div>
@@ -27,10 +28,12 @@
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     {{ agent.codename }}
                     <div>
-                        <a href="{{ url_for('get_agent', id=agent.id) }}" class="btn btn-info btn-sm">Data</a>
-                        <a href="{{ url_for('edit_agent', id=agent.id) }}" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="{{ url_for('delete_agent', id=agent.id) }}" class="btn btn-sm btn-danger"
-                           onclick="return confirm('Are you sure?')">Delete</a>
+                        <a href="{{ url_for('get_agent', id=agent.id) }}" class="btn btn-info btn-sm">Данные</a>
+                        <a href="{{ url_for('edit_agent', id=agent.id) }}" class="btn btn-sm btn-warning">Ред.</a>
+                        <form method="POST" action="{{ url_for('delete_agent', id=agent.id) }}" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-danger"
+                                    onclick="return confirm('Are you sure?')">Удалить</button>
+                        </form>
                     </div>
                 </li>
                 {% endfor %}
@@ -38,12 +41,15 @@
         </div>
 
         <div class="text-center mt-4">
-            <a href="{{ url_for('add_agent') }}" class="btn btn-success">Add New Agent</a>
+            <a href="{{ url_for('add_agent') }}" class="btn btn-success">Добавить Агента</a>
         </div>
     </div>
+
     <footer class="text-center mt-4">
-        <a href="{{ url_for('delete_all') }}" class="btn btn-danger"
-            onclick="return confirm('Точно удалить всех агентов?')">💀 Удалить всех</a>
+        <form method="POST" action="{{ url_for('delete_all') }}" style="display: inline;">
+            <button type="submit" class="btn btn-danger"
+                    onclick="return confirm('Точно удалить всех агентов?')">💀 Удалить всех</button>
+        </form>
     </footer>
 </body>
 </html>

@@ -1,5 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 
 app = Flask(__name__)
 
@@ -15,8 +19,8 @@ class Agent(db.Model):
     email = db.Column(db.String(100), nullable=False)
     access_level = db.Column(db.String(50), nullable=False)
 
-def __repr__(self):
-    return f'<Agent {self.title}>'
+    def __repr__(self):
+        return f'<Agent {self.codename}>'
 
 with app.app_context():
     db.create_all()
@@ -36,7 +40,7 @@ def get_agents():
     return render_template('agents.html', agents=agents, current_level=level)
 
 
-# 📌 Добавление новой задачи
+# 📌 Добавление нового агента
 @app.route('/add', methods=['GET', 'POST'])
 def add_agent():
     error = None
@@ -63,21 +67,28 @@ def add_agent():
     return render_template('add.html', error=error)
 
 
-# 📌 Просмотр данных
+# 📌 Просмотр списка агентов
 @app.route('/agent/<int:id>')
 def get_agent(id):
     agent = Agent.query.get_or_404(id)
     return render_template('data.html', agent=agent)
 
 
-# 📌 Редактирование задачи
+# 📌 Редактирование агента
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_agent(id):
-    agent = Agent.query.get_or_404(id)  # Получаем задачу по ID
+    agent = Agent.query.get_or_404(id)  # Получаем агента по ID
     if request.method == 'POST':
-        new_agent = request.form['codename']
-        if new_agent.strip():
-            agent.codename = new_agent
+        new_codename = request.form['codename']
+        new_phone = request.form['phone']
+        new_email = request.form['email']
+        new_access_level = request.form['access_level']
+
+        if new_codename.strip():
+            agent.codename = new_codename
+            agent.phone = new_phone
+            agent.email = new_email
+            agent.access_level = new_access_level
             db.session.commit()
         return redirect(url_for('get_agents'))
     return render_template('edit.html', agent=agent)
@@ -97,16 +108,18 @@ def search_agent():
 
 
 
-# 📌 Удаление задачи
-@app.route('/delete/<int:id>')
+
+
+# 📌 Удаление агента
+@app.route('/delete/<int:id>', methods=['POST'])
 def delete_agent(id):
-    agent = Agent.query.get_or_404(id)  # Получаем задачу по ID
-    db.session.delete(agent)  # Удаляем из базы
-    db.session.commit()  # Подтверждаем изменения
+    agent = Agent.query.get_or_404(id)
+    db.session.delete(agent)
+    db.session.commit()
     return redirect(url_for('get_agents'))
 
 # 📌 Удаление ВСЕХ
-@app.route('/delete_all')
+@app.route('/delete_all', methods=['POST'])
 def delete_all():
     Agent.query.delete()
     db.session.commit()
@@ -114,4 +127,5 @@ def delete_all():
 
 # Запуск сервера
 if __name__ == "__main__":
-    app.run(debug=True)
+    debug_mode = os.getenv('flask_debug') == 'True'
+    app.run(debug=debug_mode)
